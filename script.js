@@ -75,25 +75,19 @@ file.addEventListener('change', function(){
 
 function drawVisualiser(bufferLength, x, barWidth, barHeight, dataArray){
     for (let i = 0; i < bufferLength; i++){
-        barHeight = dataArray[i] * 2;
-        const red = i * barHeight / 15;
-        const green = i * 4;
-        const blue = barHeight / 2;
+        barHeight = dataArray[i];
+        canvasCtx.save();
+        canvasCtx.translate(canvas.width/2, canvas.height/2);
+        canvasCtx.rotate(i + Math.PI * 2 / bufferLength);
+        const red = i * barHeight / 30;
+        const green = i / 2;
+        const blue = barHeight;
         canvasCtx.fillStyle = 'white';
-        canvasCtx.fillRect(canvas.width /2 - x, canvas.height - barHeight - 30, barWidth, 20);
+        canvasCtx.fillRect(0, 0, barWidth, 20);
         canvasCtx.fillStyle = 'rgb(' + red + ',' + green + ',' + blue + ')';
-        canvasCtx.fillRect(canvas.width /2 - x, canvas.height - barHeight, barWidth, barHeight);
+        canvasCtx.fillRect(0, 0, barWidth, barHeight);
         x += barWidth;
+        canvasCtx.restore();
     }
-    for (let i = 0; i < bufferLength; i++){
-        barHeight = dataArray[i] * 2;
-        const red = i * barHeight / 15;
-        const green = i * 4;
-        const blue = barHeight / 2;
-        canvasCtx.fillStyle = 'white';
-        canvasCtx.fillRect(x, canvas.height - barHeight - 30, barWidth, 20);
-        canvasCtx.fillStyle = 'rgb(' + red + ',' + green + ',' + blue + ')';
-        canvasCtx.fillRect(x, canvas.height - barHeight, barWidth, barHeight);
-        x += barWidth;
-    }
+   
 }
