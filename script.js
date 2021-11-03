@@ -1,12 +1,9 @@
-const button1 = document.getElementById('button1');
-// create a new instance of builtin javascript class
-// let audio1 = new Audio();
-// audio1.src = './songs/feeling.mp3';
 
-// const audioCtx = new AudioContext();
+
 
 const container = document.getElementById('container');
 const canvas = document.getElementById('canvas1');
+const file = document.getElementById('fileupload');
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 const canvasCtx = canvas.getContext('2d');
@@ -24,7 +21,7 @@ container.addEventListener('click', function(){
     analyser = audioCtx.createAnalyser();
     audioSource.connect(analyser);
     analyser.connect(audioCtx.destination);
-    analyser.fftSize = 64;
+    analyser.fftSize = 128;
     const bufferLength = analyser.frequencyBinCount;
     const dataArray = new Uint8Array(bufferLength);
 
@@ -37,12 +34,7 @@ container.addEventListener('click', function(){
         x = 0;
         canvasCtx.clearRect(0, 0, canvas.width, canvas.height);
         analyser.getByteFrequencyData(dataArray);
-        for (let i = 0; i < bufferLength; i++){
-            barHeight = dataArray[i];
-            canvasCtx.fillStyle = 'white';
-            canvasCtx.fillRect(x, canvas.height - barHeight, barWidth, barHeight);
-            x += barWidth;
-        }
+        drawVisualiser(bufferLength, x, barWidth, barHeight, dataArray);
         requestAnimationFrame(animate);
     }
 
@@ -51,29 +43,44 @@ container.addEventListener('click', function(){
 });
 
 
+file.addEventListener('change', function(){
+    const files = this.files;
+    const audio1 = document.getElementById('audio1');
+    audio1.src = URL.createObjectURL(files[0]);
+    audio1.onload();
+    audio1.play();
+    audioSource = audioCtx.createMediaElementSource(audio1);
+    analyser = audioCtx.createAnalyser();
+    audioSource.connect(analyser);
+    analyser.connect(audioCtx.destination);
+    analyser.fftSize = 128;
+    const bufferLength = analyser.frequencyBinCount;
+    const dataArray = new Uint8Array(bufferLength);
 
-// button1.addEventListener('click', function(){
-//     audio1.play();
 
-//     audio1.addEventListener('playing', function(){
-//         console.log('Audio 1 started playing!')
-//     });
+    const barWidth = canvas.width / bufferLength;
+    let barHeight;
+    let x;
 
-//     audio1.addEventListener('ended', function(){
-//         console.log('Audio 1 ended!')
-//     });
-// });
-// // JAVASCRIPT WEB AUDIO API
-// const button2 = document.getElementById('button2');
+    function animate(){
+        x = 0;
+        canvasCtx.clearRect(0, 0, canvas.width, canvas.height);
+        analyser.getByteFrequencyData(dataArray);
+        drawVisualiser(bufferLength, x, barWidth, barHeight, dataArray);
+        requestAnimationFrame(animate);
+    }
 
-// button2.addEventListener('click', playSound);
+    animate();
+});
 
-// function playSound(){
-//     const oscillator = audioCtx.createOscillator();
-//     oscillator.connect(audioCtx.destination);
-//     oscillator.type = 'sawtooth'; // sine, square, triangle, sawtooth
-//     oscillator.start();
-//     setTimeout(function(){
-//         oscillator.stop();
-//     }, 200);
-// }
+function drawVisualiser(bufferLength, x, barWidth, barHeight, dataArray){
+    for (let i = 0; i < bufferLength; i++){
+        barHeight = dataArray[i];
+        const red = i * barHeight / 15;
+        const green = i * 4;
+        const blue = barHeight / 2;
+        canvasCtx.fillStyle = 'rgb(' + red + ',' + green + ',' + blue + ')';
+        canvasCtx.fillRect(x, canvas.height - barHeight, barWidth, barHeight);
+        x += barWidth;
+    }
+}
