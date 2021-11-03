@@ -78,13 +78,9 @@ function drawVisualiser(bufferLength, x, barWidth, barHeight, dataArray){
         barHeight = dataArray[i];
         canvasCtx.save();
         canvasCtx.translate(canvas.width/2, canvas.height/2);
-        canvasCtx.rotate(i + Math.PI * 2 / bufferLength);
-        const red = i * barHeight / 30;
-        const green = i / 2;
-        const blue = barHeight;
-        canvasCtx.fillStyle = 'white';
-        canvasCtx.fillRect(0, 0, barWidth, 20);
-        canvasCtx.fillStyle = 'rgb(' + red + ',' + green + ',' + blue + ')';
+        canvasCtx.rotate(i * Math.PI * 2 / bufferLength);
+        const hue = i * 5;
+        canvasCtx.fillStyle = 'hsl(' + hue + ',100%, 50%)';
         canvasCtx.fillRect(0, 0, barWidth, barHeight);
         x += barWidth;
         canvasCtx.restore();
