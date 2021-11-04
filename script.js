@@ -11,7 +11,6 @@ let audioSource;
 let analyser;
 
 container.addEventListener('click', function(){
-    // let audio1 = new Audio();
     const audio1 = document.getElementById('audio1');
     audio1.src = './songs/feeling.mp3';
 
@@ -78,7 +77,7 @@ function drawVisualiser(bufferLength, x, barWidth, barHeight, dataArray){
         barHeight = dataArray[i] * 1.5;
         canvasCtx.save();
         canvasCtx.translate(canvas.width/2, canvas.height/2);
-        canvasCtx.rotate(i * Math.PI * 2 / bufferLength);
+        canvasCtx.rotate(i * Math.PI * 4 / bufferLength);
         const hue = i * 5;
         canvasCtx.fillStyle = 'hsl(' + hue + ',100%, 50%)';
         canvasCtx.fillRect(0, 0, barWidth, barHeight);
